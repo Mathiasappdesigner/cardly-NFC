@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cardly NFC - Premium NFC kaartjes</title>
+  <meta name="description" content="Premium set van 25 NFC-businesskaartjes voor moderne ondernemers. Tik, deel en verbind zonder papieren visitekaartjes.">
+  <style>
+    :root {
+      --ink: #111816;
+      --muted: #65716c;
+      --paper: #f5f3ed;
+      --panel: #ffffff;
+      --line: #ddd9cf;
+      --teal: #0d6f68;
+      --teal-dark: #084f4a;
+      --copper: #b7653f;
+      --gold: #c79a36;
+      --charcoal: #1d2422;
+      --soft: #e8f2ef;
+      --shadow: 0 24px 70px rgba(17, 24, 22, 0.16);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    img { display: block; max-width: 100%; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px clamp(16px, 4vw, 52px);
+      background: rgba(245, 243, 237, 0.9);
+      border-bottom: 1px solid rgba(221, 217, 207, 0.86);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--charcoal);
+      letter-spacing: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 750;
+      font-size: 14px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .ghost, .solid {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 15px;
+      border-radius: 7px;
+      text-decoration: none;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .ghost {
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .solid {
+      color: #fff;
+      background: var(--teal);
+      box-shadow: 0 12px 28px rgba(13, 111, 104, 0.22);
+    }
+
+    .solid:hover { background: var(--teal-dark); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.92fr);
+      gap: clamp(26px, 5vw, 70px);
+      align-items: center;
+      min-height: calc(100vh - 68px);
+      padding: clamp(34px, 6vw, 82px) clamp(16px, 4vw, 52px) 44px;
+      background:
+        linear-gradient(135deg, rgba(245, 243, 237, 0.96), rgba(232, 242, 239, 0.86)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=82");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 7px 10px;
+      border: 1px solid rgba(13, 111, 104, 0.22);
+      border-radius: 999px;
+      color: var(--teal-dark);
+      background: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: var(--gold);
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 780px;
+      margin-bottom: 18px;
+      font-size: clamp(42px, 7vw, 86px);
+      line-height: 0.94;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 660px;
+      margin-bottom: 28px;
+      color: #3f4b47;
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.55;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .price-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+      color: #2f3a36;
+    }
+
+    .price-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(221, 217, 207, 0.84);
+      font-weight: 800;
+    }
+
+    .showcase {
+      position: relative;
+      min-height: 540px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background:
+        linear-gradient(145deg, rgba(17, 24, 22, 0.94), rgba(13, 111, 104, 0.86)),
+        url("https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=82");
+      background-size: cover;
+      background-position: center;
+      box-shadow: var(--shadow);
+    }
+
+    .card-stack {
+      position: absolute;
+      inset: 12%;
+      display: grid;
+      place-items: center;
+      perspective: 1200px;
+    }
+
+    .nfc-card {
+      position: absolute;
+      width: min(86%, 430px);
+      aspect-ratio: 1.58 / 1;
+      border-radius: 8px;
+      padding: 26px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0)),
+        linear-gradient(135deg, #101817, #1d3d39 48%, #0d6f68);
+      box-shadow: 0 30px 75px rgba(0, 0, 0, 0.35);
+      transform: rotateX(58deg) rotateZ(-18deg);
+    }
+
+    .nfc-card:nth-child(2) {
+      transform: translate(34px, 44px) rotateX(58deg) rotateZ(-18deg);
+      background: linear-gradient(135deg, #f8f5eb, #d8c99d);
+      color: var(--ink);
+    }
+
+    .nfc-card:nth-child(3) {
+      transform: translate(-38px, -42px) rotateX(58deg) rotateZ(-18deg);
+      background: linear-gradient(135deg, #232a28, #b7653f);
+      opacity: 0.92;
+    }
+
+    .nfc-card strong {
+      position: absolute;
+      left: 26px;
+      bottom: 24px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .nfc-symbol {
+      position: absolute;
+      right: 28px;
+      top: 26px;
+      width: 58px;
+      height: 58px;
+      border: 2px solid currentColor;
+      border-left-color: transparent;
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    .floating-proof {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      max-width: 260px;
+      padding: 16px;
+      border-radius: 8px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(14px);
+    }
+
+    .floating-proof strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 22px;
+    }
+
+    .section {
+      padding: clamp(42px, 7vw, 92px) clamp(16px, 4vw, 52px);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    .section-title {
+      max-width: 720px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: clamp(30px, 5vw, 58px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .feature, .product-panel, .review, .faq-item, .checkout-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+
+    .feature {
+      min-height: 210px;
+      padding: 20px;
+    }
+
+    .icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--teal);
+      font-weight: 900;
+    }
+
+    .feature h3, .review h3, .faq-item h3 {
+      margin-bottom: 8px;
+      font-size: 19px;
+    }
+
+    .feature p, .review p, .faq-item p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .product-band {
+      background: var(--charcoal);
+      color: #fff;
+    }
+
+    .product-band .lead { color: rgba(255, 255, 255, 0.72); }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(360px, 0.65fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .product-panel {
+      overflow: hidden;
+      color: var(--ink);
+    }
+
+    .product-visual {
+      min-height: 520px;
+      background:
+        linear-gradient(160deg, rgba(13, 111, 104, 0.14), rgba(183, 101, 63, 0.12)),
+        url("https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1400&q=82");
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .product-visual .nfc-card {
+      left: 10%;
+      top: 28%;
+      width: min(72%, 460px);
+      transform: rotate(-8deg);
+    }
+
+    .checkout-box {
+      padding: 24px;
+      color: var(--ink);
+    }
+
+    .checkout-box h3 {
+      margin-bottom: 8px;
+      font-size: 26px;
+    }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      margin: 18px 0;
+    }
+
+    .price strong {
+      font-size: 42px;
+      letter-spacing: 0;
+    }
+
+    .price span { color: var(--muted); }
+
+    .option-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .option-row:last-of-type {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .option-row b { display: block; }
+    .option-row small { color: var(--muted); }
+
+    .qty {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 18px 0;
+    }
+
+    .qty button {
+      width: 38px;
+      height: 38px;
+      border-radius: 7px;
+      background: var(--soft);
+      color: var(--teal-dark);
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .qty output {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      font-weight: 900;
+    }
+
+    .checkout-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 16px 0;
+      padding: 14px;
+      border-radius: 8px;
+      background: var(--paper);
+      font-weight: 900;
+    }
+
+    .checkout-total span:last-child {
+      font-size: 24px;
+      color: var(--teal-dark);
+    }
+
+    .buy-button {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 7px;
+      color: #fff;
+      background: var(--teal);
+      font-size: 16px;
+      font-weight: 950;
+    }
+
+    .trust-list {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0 0;
+      padding: 0;
+      color: var(--muted);
+      list-style: none;
+      font-size: 14px;
+    }
+
+    .trust-list li::before {
+      content: "✓ ";
+      color: var(--teal);
+      font-weight: 900;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      padding: 26px;
+      border-top: 3px solid var(--teal);
+      background: #fff;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: "0" counter(step);
+      display: block;
+      margin-bottom: 34px;
+      color: var(--copper);
+      font-size: 38px;
+      font-weight: 950;
+    }
+
+    .step h3 {
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    .step p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .reviews {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .review {
+      padding: 22px;
+    }
+
+    .stars {
+      margin-bottom: 14px;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    .faq {
+      display: grid;
+      grid-template-columns: 0.75fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .faq-item {
+      padding: 18px;
+    }
+
+    .cta {
+      padding: clamp(42px, 7vw, 92px) clamp(16px, 4vw, 52px);
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(17, 24, 22, 0.88), rgba(13, 111, 104, 0.84)),
+        url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1800&q=82");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .cta-inner {
+      max-width: 840px;
+    }
+
+    .cta p {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 26px clamp(16px, 4vw, 52px);
+      color: var(--muted);
+      background: #fff;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 40;
+      width: min(520px, calc(100% - 28px));
+      padding: 14px 16px;
+      border: 1px solid rgba(13, 111, 104, 0.22);
+      border-radius: 8px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: var(--shadow);
+      transform: translate(-50%, 140%);
+      transition: transform 180ms ease;
+    }
+
+    .toast.show { transform: translate(-50%, 0); }
+
+    @media (max-width: 1040px) {
+      .hero, .product-layout, .faq {
+        grid-template-columns: 1fr;
+      }
+
+      .showcase { min-height: 440px; }
+      .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .nav {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .nav-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .showcase, .product-visual {
+        min-height: 360px;
+      }
+
+      .feature-grid, .steps, .reviews {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head, footer {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .floating-proof {
+        left: 16px;
+        right: 16px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="Cardly NFC home">
+      <span class="brand-mark">C</span>
+      <span>Cardly NFC</span>
+    </a>
+    <nav class="nav-links" aria-label="Website navigatie">
+      <a href="#voordelen">Voordelen</a>
+      <a href="#product">Product</a>
+      <a href="#werking">Werking</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="ghost" href="#faq">Vragen</a>
+      <a class="solid" href="#product">Koop nu</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> Set van 25 NFC-kaartjes</span>
+        <h1>Premium NFC kaartjes voor moderne networking.</h1>
+        <p class="hero-copy">Laat klanten, prospects en partners met een simpele tik je contactgegevens, website, portfolio of betaalpagina openen. Geen stapels papieren visitekaartjes meer, wel een strakke digitale indruk.</p>
+        <div class="hero-actions">
+          <a class="solid" href="#product">Bestel set voor €39,99</a>
+          <a class="ghost" href="#werking">Bekijk hoe het werkt</a>
+        </div>
+        <div class="price-strip" aria-label="Belangrijkste productinformatie">
+          <span class="price-chip">€39,99 per set</span>
+          <span class="price-chip">25 kaartjes inbegrepen</span>
+          <span class="price-chip">NFC + QR-ready</span>
+        </div>
+      </div>
+
+      <div class="showcase" aria-label="Premium NFC kaart mockup">
+        <div class="card-stack">
+          <div class="nfc-card"><span class="nfc-symbol"></span><strong>Tap to connect</strong></div>
+          <div class="nfc-card"><span class="nfc-symbol"></span><strong>Cardly NFC</strong></div>
+          <div class="nfc-card"><span class="nfc-symbol"></span><strong>Digital profile</strong></div>
+        </div>
+        <div class="floating-proof">
+          <strong>25x</strong>
+          <span>Professionele NFC kaartjes in één set, ideaal voor teams, events, salons, coaches en verkopers.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="voordelen">
+      <div class="section-head">
+        <div class="section-title">
+          <h2>Gebouwd om premium te voelen.</h2>
+          <p class="lead">Een NFC-kaartje moet vertrouwen uitstralen voordat iemand tikt. Daarom draait deze site om kwaliteit, eenvoud en snelle conversie.</p>
+        </div>
+        <a class="ghost" href="#product">Bekijk pakket</a>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature">
+          <span class="icon">N</span>
+          <h3>Tik en deel</h3>
+          <p>De NFC-chip opent je gekozen link op compatibele smartphones. Ideaal voor contactpagina's, Linktree, website, portfolio of afspraakpagina.</p>
+        </article>
+        <article class="feature">
+          <span class="icon">25</span>
+          <h3>Voor team of event</h3>
+          <p>Elke bestelling bevat 25 kaartjes. Handig voor kleine teams, beurzen, open dagen, klantenbalies of sales-acties.</p>
+        </article>
+        <article class="feature">
+          <span class="icon">QR</span>
+          <h3>QR-backup mogelijk</h3>
+          <p>Voeg later een QR-code toe aan je ontwerp zodat ook toestellen zonder NFC snel kunnen scannen.</p>
+        </article>
+        <article class="feature">
+          <span class="icon">€</span>
+          <h3>Geen abonnement</h3>
+          <p>Je betaalt voor de kaartjes. Voor betalingen op je site kun je daarna Stripe of Mollie koppelen zonder Shopify-maandkost.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section product-band" id="product">
+      <div class="section-head">
+        <div class="section-title">
+          <h2>NFC Business Card Set</h2>
+          <p class="lead">Een sterke dropshipping productpagina met alle koopinformatie helder op één plek.</p>
+        </div>
+      </div>
+
+      <div class="product-layout">
+        <div class="product-panel">
+          <div class="product-visual" aria-label="NFC business kaart productbeeld">
+            <div class="nfc-card"><span class="nfc-symbol"></span><strong>Cardly NFC</strong></div>
+          </div>
+        </div>
+
+        <aside class="checkout-box" aria-label="Bestel NFC kaartjes">
+          <h3>Premium NFC kaartjes</h3>
+          <p class="lead">Set van 25 kaartjes voor ondernemers, winkels en teams.</p>
+          <div class="price">
+            <strong>€39,99</strong>
+            <span>incl. 25 kaartjes</span>
+          </div>
+
+          <div class="option-row">
+            <div>
+              <b>Pakketinhoud</b>
+              <small>25 NFC kaartjes per bestelling</small>
+            </div>
+            <span>Inbegrepen</span>
+          </div>
+          <div class="option-row">
+            <div>
+              <b>Gebruik</b>
+              <small>Contact, website, socials, portfolio of menu</small>
+            </div>
+            <span>NFC</span>
+          </div>
+          <div class="option-row">
+            <div>
+              <b>Checkout</b>
+              <small>Vervang later door je Stripe Payment Link</small>
+            </div>
+            <span>Stripe-ready</span>
+          </div>
+
+          <div class="qty" aria-label="Aantal sets">
+            <button id="minus" aria-label="Minder sets">-</button>
+            <output id="qty">1</output>
+            <button id="plus" aria-label="Meer sets">+</button>
+          </div>
+
+          <div class="checkout-total">
+            <span>Totaal</span>
+            <span id="total">€39,99</span>
+          </div>
+
+          <button class="buy-button" id="buyButton">Bestel met Stripe</button>
+          <ul class="trust-list">
+            <li>Veilige checkout via je eigen Stripe-link zodra je die koppelt</li>
+            <li>Prijs ingesteld op €39,99 per set</li>
+            <li>Producttekst klaar voor dropshipping verkoop</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="werking">
+      <div class="section-head">
+        <div class="section-title">
+          <h2>Zo werkt het.</h2>
+          <p class="lead">Hou de ervaring simpel: klant bestelt, jij verwerkt de bestelling, en het kaartje verwijst naar de juiste digitale pagina.</p>
+        </div>
+      </div>
+      <div class="steps">
+        <article class="step">
+          <h3>Kies je link</h3>
+          <p>Gebruik een website, contactpagina, Instagram, portfolio, digitaal menu of betaalpagina als bestemming.</p>
+        </article>
+        <article class="step">
+          <h3>Programmeer of personaliseer</h3>
+          <p>Schrijf de link naar de NFC-chip met een NFC-tool of laat dit onderdeel door je leverancier verwerken.</p>
+        </article>
+        <article class="step">
+          <h3>Tik om te delen</h3>
+          <p>De ontvanger houdt een compatibele smartphone tegen het kaartje en opent meteen je digitale profiel.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-title">
+          <h2>Gemaakt voor ondernemers.</h2>
+          <p class="lead">Gebruik deze reviews als stijlvoorbeeld. Vervang ze door echte klantreacties zodra je live verkoopt.</p>
+        </div>
+      </div>
+      <div class="reviews">
+        <article class="review">
+          <div class="stars">★★★★★</div>
+          <h3>Veel sterker dan papieren kaartjes</h3>
+          <p>“Tijdens afspraken laat ik mensen gewoon tikken. Het voelt veel professioneler en ik raak geen kaartjes meer kwijt.”</p>
+        </article>
+        <article class="review">
+          <div class="stars">★★★★★</div>
+          <h3>Handig voor mijn team</h3>
+          <p>“De set van 25 is ideaal voor events. Iedereen heeft dezelfde moderne manier om gegevens te delen.”</p>
+        </article>
+        <article class="review">
+          <div class="stars">★★★★★</div>
+          <h3>Perfect als eerste indruk</h3>
+          <p>“Klanten vinden het verrassend wanneer mijn profiel direct opent. Het maakt mijn merk meteen serieuzer.”</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="faq">
+        <div>
+          <h2>Veelgestelde vragen.</h2>
+          <p class="lead">Alles helder houden helpt bij verkoop. Deze antwoorden zijn bewust concreet en eerlijk.</p>
+        </div>
+        <div class="faq-list">
+          <article class="faq-item">
+            <h3>Hoeveel kaartjes krijg ik?</h3>
+            <p>Elke bestelling bevat 25 NFC kaartjes. De prijs op deze pagina staat ingesteld op €39,99 per set.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Werkt NFC op elke telefoon?</h3>
+            <p>De meeste moderne smartphones ondersteunen NFC. Voor oudere toestellen kun je een QR-code als backup gebruiken.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Kan ik Stripe koppelen?</h3>
+            <p>Ja. Vervang in de code de tijdelijke checkoutlink door je eigen Stripe Payment Link of Stripe Checkout route.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Is dit klaar voor echte verkoop?</h3>
+            <p>De productpagina is klaar als frontend. Voor live verkoop voeg je betaalprovider, verzendinformatie, retourbeleid, privacybeleid en orderopslag toe.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="cta-inner">
+        <h2>Start met een productpagina die vertrouwen geeft.</h2>
+        <p class="lead">Deze pagina is gemaakt om later direct op GitHub en Vercel te zetten, met Stripe als betaalstap. De look is premium, de prijs is duidelijk en de koopknop staat klaar.</p>
+        <a class="solid" href="#product">Bestel set voor €39,99</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Cardly NFC. Premium NFC kaartjes.</span>
+    <span>Checkout, retourbeleid en levertermijn moeten nog met je echte leverancier worden ingevuld.</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const stripePaymentLink = "https://buy.stripe.com/PLAATS-HIER-JE-STRIPE-LINK";
+    const unitPrice = 39.99;
+    let quantity = 1;
+
+    const qty = document.getElementById("qty");
+    const total = document.getElementById("total");
+    const toast = document.getElementById("toast");
+
+    const money = new Intl.NumberFormat("nl-BE", {
+      style: "currency",
+      currency: "EUR"
+    });
+
+    function updateTotal() {
+      qty.textContent = quantity;
+      total.textContent = money.format(unitPrice * quantity);
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 4200);
+    }
+
+    document.getElementById("minus").addEventListener("click", () => {
+      quantity = Math.max(1, quantity - 1);
+      updateTotal();
+    });
+
+    document.getElementById("plus").addEventListener("click", () => {
+      quantity += 1;
+      updateTotal();
+    });
+
+    document.getElementById("buyButton").addEventListener("click", () => {
+      if (stripePaymentLink.includes("PLAATS-HIER")) {
+        showToast("Stripe is nog niet gekoppeld. Vervang de tijdelijke link in de code door je eigen Stripe Payment Link.");
+        return;
+      }
+
+      const url = new URL(stripePaymentLink);
+      url.searchParams.set("quantity", quantity);
+      window.location.href = url.toString();
+    });
+
+    updateTotal();
+  </script>
+</body>
+</html>
